@@ -1,0 +1,9 @@
+[package]
+name = "calc"
+version = "0.1.0"
+edition = "2021"
+author = ["Sabri Daagi <sabri.daagi@hotmail.com"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
