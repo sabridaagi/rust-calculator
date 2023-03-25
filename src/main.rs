@@ -29,24 +29,26 @@ fn main() {
         '*' => first_number * second_number,
         '/' => first_number / second_number,
         '%' => first_number % second_number,
-        _ => panic!("Unkown operator!")
+        _ => panic!("Unkown operator!"),
     };
 
-    println!("the result for {} {} {} is {}", first_number, operator, second_number, result);
+    println!(
+        "the result for {} {} {} is {}",
+        first_number, operator, second_number, result
+    );
 }
 
-// verify is the string is valid and return the number 
+// verify is the string is valid and return the number
 fn verify_number(number: &str) -> Option<f64> {
     match number.trim().parse::<f64>() {
         Ok(n) => return Some(n),
-        Err(_) => None
+        Err(_) => None,
     }
 }
 
 // prints the operation paragraph
 fn print_operations() {
-    let text_operations = 
-        "what operation would you like to perform ? \n\
+    let text_operations = "what operation would you like to perform ? \n\
         + add\n\
         - substract\n\
         / divide\n\
@@ -66,9 +68,9 @@ fn print_line(output: &str) {
 // reads the user input and look for errors
 fn read(input: &mut String) {
     match stdin().read_line(input) {
-        Ok(_) => { },
-        Err(e) => println!("Something went wrong {}", e)
-    } 
+        Ok(_) => {}
+        Err(e) => println!("Something went wrong {}", e),
+    }
 }
 
 // clear the terminal and place the curst to the top (column 1, row 1)
