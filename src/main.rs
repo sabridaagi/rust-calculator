@@ -41,7 +41,7 @@ fn main() {
 // verify is the string is valid and return the number
 fn verify_number(number: &str) -> Option<f64> {
     match number.trim().parse::<f64>() {
-        Ok(n) => return Some(n),
+        Ok(n) => Some(n),
         Err(_) => None,
     }
 }
