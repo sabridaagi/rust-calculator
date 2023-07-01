@@ -72,10 +72,10 @@ fn obtain_number(title: &str) -> Result<f64, String> {
     read(&mut number);
     clear_terminal();
 
-    return match verify_number(&number) {
+    match verify_number(&number) {
         Ok(number) => Ok(number),
         Err(error) => Err(format!("Error: {}", error)),
-    };
+    }
 }
 
 // verify is the string is valid and return the number
