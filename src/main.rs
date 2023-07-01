@@ -3,25 +3,29 @@ use std::io::{stdin, stdout, Write};
 fn main() {
     clear_terminal();
 
-    let mut first_number = String::new();
-    let mut second_number = String::new();
-    let mut operator = String::new();
+    let first_number: f64 =  match obtain_number("Please enter the first number: ") {
+        Ok(number) => number,
+        Err(error) => {
+            println!("{}", error);
+            return;
+        }
+    };
 
-    print_line("Please enter the first number: ");
-    read(&mut first_number);
-    clear_terminal();
+    let operator: char = match obtain_operator() {
+        Ok(operator) => operator,
+        Err(error) => {
+            println!("{}", error);
+            return;
+        }
+    }; 
 
-    print_operations();
-    read(&mut operator);
-    clear_terminal();
-
-    print_line("Please enter the second number: ");
-    read(&mut second_number);
-    clear_terminal();
-
-    let first_number: f64 = verify_number(&first_number).unwrap();
-    let second_number: f64 = verify_number(&second_number).unwrap();
-    let operator: char = operator.trim().chars().next().unwrap();
+    let second_number: f64 =  match obtain_number("Please enter the first number: ") {
+        Ok(number) => number,
+        Err(error) => {
+            println!("{}", error);
+            return;
+        }
+    };
 
     let result = match operator {
         '+' => first_number + second_number,
@@ -38,13 +42,49 @@ fn main() {
     );
 }
 
-// verify is the string is valid and return the number
-fn verify_number(number: &str) -> Option<f64> {
-    match number.trim().parse::<f64>() {
-        Ok(n) => Some(n),
-        Err(_) => None,
+// obtain an operator from the user
+fn obtain_operator() -> Result<char, String> {
+    let mut operator = String::new();
+
+    print_operations();
+    read(&mut operator);
+    clear_terminal();
+
+    let trimmed_operator = operator.trim().chars().next();
+
+    match trimmed_operator {
+        Some(op) => {
+            if op == '+' || op == '-' || op == '*' || op == '/' || op == '%' {
+                Ok(op)
+            } else {
+                Err(format!("Error: Invalid operator {}", op))
+            }
+        },
+        None => Err(String::from("Error: Empty operator"))
     }
 }
+
+// obtain a number from the user
+fn obtain_number(title: &str) -> Result<f64, String> {
+    let mut number = String::new();
+
+    print_line(title);
+    read(&mut number);
+    clear_terminal();
+
+    return match verify_number(&number) {
+        Ok(number) => Ok(number),
+        Err(error) => Err(format!("Error: {}", error)),
+    };
+}
+
+// verify is the string is valid and return the number
+fn verify_number(input: &str) -> Result<f64, String> {
+    match input.trim().parse::<f64>() {
+        Ok(input) => Ok(input),
+        Err(_) => Err(String::from("Invalid input! Please enter a number.")),
+    }
+} 
 
 // prints the operation paragraph
 fn print_operations() {
