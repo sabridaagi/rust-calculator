@@ -17,7 +17,7 @@ fn main() {
             println!("{}", error);
             return;
         }
-    }; 
+    };
 
     let second_number: f64 =  match obtain_number("Please enter the first number: ") {
         Ok(number) => number,
@@ -84,7 +84,7 @@ fn verify_number(input: &str) -> Result<f64, String> {
         Ok(input) => Ok(input),
         Err(_) => Err(String::from("Invalid input! Please enter a number.")),
     }
-} 
+}
 
 // prints the operation paragraph
 fn print_operations() {
