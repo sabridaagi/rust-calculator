@@ -1,45 +1,50 @@
 use std::io::{stdin, stdout, Write};
 
+const RESTART_MESSAGE: &str = "Please type anything to restart or press CTRL+C to quit";
+
 fn main() {
-    clear_terminal();
+    loop {
+        clear_terminal();
+        let first_number: f64 =  match obtain_number("Please enter the first number: ") {
+            Ok(number) => number,
+            Err(error) => {
+                output_error(error);
+                continue;
+            }
+        };
 
-    let first_number: f64 =  match obtain_number("Please enter the first number: ") {
-        Ok(number) => number,
-        Err(error) => {
-            println!("{}", error);
-            return;
-        }
-    };
+        let operator: char = match obtain_operator() {
+            Ok(operator) => operator,
+            Err(error) => {
+                output_error(error);
+                continue;
+            }
+        };
 
-    let operator: char = match obtain_operator() {
-        Ok(operator) => operator,
-        Err(error) => {
-            println!("{}", error);
-            return;
-        }
-    };
+        let second_number: f64 =  match obtain_number("Please enter the first number: ") {
+            Ok(number) => number,
+            Err(error) => {
+                output_error(error);
+                continue;
+            }
+        };
 
-    let second_number: f64 =  match obtain_number("Please enter the first number: ") {
-        Ok(number) => number,
-        Err(error) => {
-            println!("{}", error);
-            return;
-        }
-    };
+        let result = match operator {
+            '+' => first_number + second_number,
+            '-' => first_number - second_number,
+            '*' => first_number * second_number,
+            '/' => first_number / second_number,
+            '%' => first_number % second_number,
+            _ => panic!("Unkown operator!"),
+        };
 
-    let result = match operator {
-        '+' => first_number + second_number,
-        '-' => first_number - second_number,
-        '*' => first_number * second_number,
-        '/' => first_number / second_number,
-        '%' => first_number % second_number,
-        _ => panic!("Unkown operator!"),
-    };
-
-    println!(
-        "the result for {} {} {} is {}",
-        first_number, operator, second_number, result
-    );
+        let result_output = format!(
+            "the result for {} {} {} is {}",
+            first_number, operator, second_number, result
+        );
+        print_line(&result_output);
+        hold_user(RESTART_MESSAGE);
+    }
 }
 
 // obtain an operator from the user
@@ -57,7 +62,7 @@ fn obtain_operator() -> Result<char, String> {
             if op == '+' || op == '-' || op == '*' || op == '/' || op == '%' {
                 Ok(op)
             } else {
-                Err(format!("Error: Invalid operator {}", op))
+                Err(String::from("Error: Please enter a valid operator"))
             }
         },
         None => Err(String::from("Error: Empty operator"))
@@ -71,18 +76,14 @@ fn obtain_number(title: &str) -> Result<f64, String> {
     print_line(title);
     read(&mut number);
     clear_terminal();
-
-    match verify_number(&number) {
-        Ok(number) => Ok(number),
-        Err(error) => Err(format!("Error: {}", error)),
-    }
+    verify_number(&number).map_err(|error| error)
 }
 
 // verify is the string is valid and return the number
 fn verify_number(input: &str) -> Result<f64, String> {
     match input.trim().parse::<f64>() {
         Ok(input) => Ok(input),
-        Err(_) => Err(String::from("Invalid input! Please enter a number.")),
+        Err(_) => Err(String::from("Error: Please enter a valid number.")),
     }
 }
 
@@ -95,13 +96,13 @@ fn print_operations() {
         * multiply\n\
         % module (remainder) \n\
         : ";
-    print!("{}", text_operations);
+    print_line(text_operations);
     stdout().flush().unwrap();
 }
 
 // immedialty print a single line
 fn print_line(output: &str) {
-    print!("{}", output);
+    println!("{}", output);
     stdout().flush().unwrap();
 }
 
@@ -109,8 +110,22 @@ fn print_line(output: &str) {
 fn read(input: &mut String) {
     match stdin().read_line(input) {
         Ok(_) => {}
-        Err(e) => println!("Something went wrong {}", e),
+        Err(e) => panic!("Something went wrong when getting user input : \n {}", e),
     }
+}
+
+// hold the user and wait for its input with a message
+fn hold_user(msg: &str) {
+    print_line(msg);
+    let mut unused_input = String::new();
+    read(&mut unused_input);
+    clear_terminal();
+}
+
+// output an error message and waits for the user input
+fn output_error(error: String) {
+    print_line(&error);
+    hold_user(RESTART_MESSAGE);
 }
 
 // clear the terminal and place the curst to the top (column 1, row 1)
