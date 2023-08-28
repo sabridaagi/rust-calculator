@@ -55,17 +55,13 @@ fn obtain_operator() -> Result<char, String> {
     read(&mut operator);
     clear_terminal();
 
-    let trimmed_operator = operator.trim().chars().next();
-
-    match trimmed_operator {
-        Some(op) => {
-            if op == '+' || op == '-' || op == '*' || op == '/' || op == '%' {
-                Ok(op)
-            } else {
-                Err(String::from("Error: Please enter a valid operator"))
-            }
-        },
-        None => Err(String::from("Error: Empty operator"))
+    if let Some(op) = operator.trim().chars().next() {
+        match op {
+            '+' | '-' | '*' | '/' | '%' => Ok(op),
+            _ => Err(String::from("Error: Please enter a valid operator")),
+        }
+    } else {
+        Err(String::from("Error: Empty operator"))
     }
 }
 
